@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSelector, useDispatch } from "react-redux";
-import { RootState } from "@/store/store";
+import { RootState } from "@/store/Store";
 import { removeFromCart, updateQuantity, clearCart } from "@/store/CartSlice";
 import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag, CreditCard } from "lucide-react";
 

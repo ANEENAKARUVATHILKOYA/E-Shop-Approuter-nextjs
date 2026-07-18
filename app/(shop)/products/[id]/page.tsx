@@ -20,7 +20,7 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
   let product;
   try {
-    product = await getProductById(productId);
+    product = await getProductById(productId.toString());
   } catch (error) {
     console.error("Error fetching product data:", error);
     notFound();
