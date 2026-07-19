@@ -2,6 +2,9 @@ import Link from "next/link";
 import { getAllProducts, Product } from "@/services/api";
 import { ShoppingBag, ArrowRight, Truck, ShieldCheck, Zap } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+
+
 export default async function HomePage() {
   let featuredProducts: Product[] = [];
   

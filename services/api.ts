@@ -21,9 +21,7 @@ export interface Product{
  */
 export async function getAllProducts(): Promise<Product[]> {
     const res = await fetch(`${BASE_URL}/products`, {
-      next:{
-        revalidate : 3600
-      }
+      cache: "no-store"
     });
 
    if(!res.ok) {
