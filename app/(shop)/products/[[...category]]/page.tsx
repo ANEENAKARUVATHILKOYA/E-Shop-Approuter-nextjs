@@ -2,11 +2,13 @@ import Link from "next/link";
 import { getAllProducts, getProductByCategory, getCategories, Product } from "@/services/api";
 import { Layers, ArrowLeft, SearchX } from "lucide-react";
 
+// 1. FORCE NEXT.JS TO RUN DATA FETCH LIVE ON VERCEL RUNTIME (CRITICAL)
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{
     category?: string[];
   }>;
-  // 1. Declare the searchParams promise signature for Next.js 16
   searchParams: Promise<{
     search?: string;
   }>;
@@ -16,11 +18,11 @@ export default async function ProductsPage({ params, searchParams }: PageProps) 
   const resolvedParams = await params;
   const resolvedSearchParams = await searchParams;
   
-  const rawCategory = resolvedParams.category 
-    ? decodeURIComponent(resolvedParams.category.join("/")) 
+  // 2. SAFE PARSING: Extract the first string out of the catch-all array structure
+  const rawCategory = resolvedParams.category && resolvedParams.category.length > 0
+    ? decodeURIComponent(resolvedParams.category[0]) 
     : null;
     
-  // 2. Extract the active textual search term query
   const searchWord = resolvedSearchParams.search || "";
 
   let products: Product[] = [];
@@ -29,13 +31,13 @@ export default async function ProductsPage({ params, searchParams }: PageProps) 
   try {
     categories = await getCategories();
 
+    // 3. Normalizing request context strings for API processing
     if (rawCategory) {
-      products = await getProductByCategory(rawCategory);
+      products = await getProductByCategory(rawCategory.toLowerCase());
     } else {
       products = await getAllProducts();
     }
 
-    // 3. Client Filter Logic matching titles or descriptions against the input query term
     if (searchWord.trim() !== "") {
       const criteria = searchWord.toLowerCase().trim();
       products = products.filter(
@@ -92,7 +94,7 @@ export default async function ProductsPage({ params, searchParams }: PageProps) 
                 key={cat}
                 href={`/products/${encodeURIComponent(cat)}${searchWord ? `?search=${encodeURIComponent(searchWord)}` : ""}`}
                 className={`rounded-xl px-4 py-2 text-sm font-medium capitalize transition ${
-                  rawCategory === cat
+                  rawCategory?.toLowerCase() === cat.toLowerCase()
                     ? "bg-blue-600 text-white shadow-sm"
                     : "bg-white text-gray-600 border border-gray-200 hover:bg-gray-50"
                 }`}
@@ -106,7 +108,6 @@ export default async function ProductsPage({ params, searchParams }: PageProps) 
         {/* Dynamic Catalog Grid Section */}
         <div className="lg:col-span-3">
           {products.length === 0 ? (
-            /* Empty Search Results Layout */
             <div className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center">
               <div className="rounded-full bg-gray-50 p-4 text-gray-400">
                 <SearchX className="h-10 w-10" />
