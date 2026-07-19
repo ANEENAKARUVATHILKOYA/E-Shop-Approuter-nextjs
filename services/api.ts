@@ -70,7 +70,7 @@ export async function getCategories(): Promise<string[]> {
  */
 export async function getProductByCategory(category: string):Promise<Product[]>{
  const encodedCategory =  encodeURIComponent(category);
- const res = await fetch(`${BASE_URL}/product/category/${encodedCategory}`,{
+ const res = await fetch(`${BASE_URL}/products/category/${encodedCategory}`,{
  next: {revalidate: 3600}, 
  });
 
