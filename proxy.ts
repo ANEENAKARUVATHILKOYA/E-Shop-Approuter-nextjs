@@ -6,7 +6,7 @@ import type { NextRequest } from 'next/server';
  * This function runs before incoming requests are completed.
  * We will use it to simulate protecting a checkout route or inspecting cookies/headers.
  */
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   // Example: Check for an authentication token or guest session cookie
   const session = request.cookies.get('session-token');
 
